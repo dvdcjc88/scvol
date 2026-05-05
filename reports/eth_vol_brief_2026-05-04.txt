@@ -1,0 +1,119 @@
+═════════════════════════════════════════════════════════════════
+  ETH VOL DESK — MORNING BRIEF
+  Generated : 2026-05-04 00:36 UTC  (23:00 SGT)
+═════════════════════════════════════════════════════════════════
+
+ETH Spot : $2,314.07
+24h range: $2,297.70 – $2,356.71  (2.6%)
+24h chg  : -0.09%   |   24h vol: $165M
+
+═════════════════════════════════════════════════════════════════
+  SECTION 1 — REGIME STATE
+═════════════════════════════════════════════════════════════════
+
+  RV (24h from 1m): CC=27.0%  Park=23.2%  GK=21.5%
+  RV (5m):          CC=29.4%  Park=26.8%  GK=25.7%
+  7d  RV : 12.4%
+  30d RV : 42.2%
+  90d RV : 53.1%
+  7d RV percentile vs history : 0th
+
+  GARCH(1,1): α=0.1122  β=0.4990  persist=0.6111
+  1d fwd vol: 45.3%   5d fwd vol: 48.4%
+
+  Deribit DVOL : 55.4  (7d ago 60.9, Δ-5.5  range 54.1–61.6)
+  OKX funding  : 0.0047%/8h  next=0.0000%  ann=5.10%
+  Deribit fund : 0.0000%/8h (24h avg)  ann=0.03%
+  Bybit funding: DATA GAP (server geofenced)
+  OKX ETH OI   : 73,043 ETH  ($169M)
+  Deribit OI   : 315.0M contracts
+
+  REGIME VERDICT: COMPRESSION/CHOP
+  24h range 2.6% | 7d RV 0th pct | chg -0.09%
+
+═════════════════════════════════════════════════════════════════
+  SECTION 2 — VOL SURFACE DISLOCATIONS
+═════════════════════════════════════════════════════════════════
+
+  ATM IV Term Structure:
+  Tenor       DTE  ATM Strike    ATM IV   GARCH diff  Rating  
+  ------------------------------------------------------------
+  ~0d         1.0        2310     43.9%        -1.4%  FAIR
+  1d          2.0        2310     45.0%        -0.3%  FAIR
+  2d          3.0        2310     46.0%        +0.7%  FAIR
+  3d          4.0        2300     47.3%        +2.0%  RICH
+  7d         11.0        2300     49.5%        +4.2%  RICH
+  14d        18.0        2300     51.5%        +6.1%  RICH
+  30d        25.0        2300     53.0%        +7.7%  RICH
+  60d        53.0        2300     56.2%       +10.9%  RICH
+  90d        88.0        2300     58.0%       +12.7%  RICH
+
+  Term structure: CONTANGO
+
+  25-Delta Risk Reversals:
+  7d: RR=-3.09%  (C25=46.2% K2400  P25=49.3% K2225)  → PUT SKEW
+  30d: RR=-3.77%  (C25=52.1% K2500  P25=55.8% K2100)  → PUT SKEW
+
+  GEX — Top Gamma Strikes:
+  Today (260505 DTE=1.0d): K2310.0(26.5m) | K2325.0(26.3m) | K2330.0(25.8m)
+    Dealer: LONG GAMMA (pin)   C/P gamma ratio: 1.00
+  7d (260508 DTE=4.0d): K2300.0(13.3m) | K2350.0(13.1m) | K2250.0(11.2m)
+    Dealer: LONG GAMMA (pin)   C/P gamma ratio: 1.00
+
+═════════════════════════════════════════════════════════════════
+  SECTION 3 — FLOW & POSITIONING
+═════════════════════════════════════════════════════════════════
+  Dune (CEX flows/whales): DATA GAP — API key required
+  Block trades >$5M      : DATA GAP — no public endpoint
+  CoinGecko sentiment bullish: 83.72%
+  CoinGecko 24h volume       : $10468M
+
+═════════════════════════════════════════════════════════════════
+  SECTION 4 — NARRATIVE & EVENT RISK
+═════════════════════════════════════════════════════════════════
+  CryptoPanic  : DATA GAP — API key required
+  LunarCrush   : DATA GAP — API key required
+  Bybit funding: DATA GAP — geofenced
+  Perplexity macro calendar: not connected
+  → Manually check: FOMC speakers, CPI, ETH ETF flows (Blackrock ETHA/Fidelity FETH),
+    token unlocks (Tokenomist), SEC filings, Ethereum network events.
+
+═════════════════════════════════════════════════════════════════
+  SECTION 5 — ACTIONABLE BRIEF
+═════════════════════════════════════════════════════════════════
+
+  REGIME : COMPRESSION/CHOP
+
+  PRIMARY   : SELL PUT (collect put-skew premium in compression regime)
+  SECONDARY : SELL STRADDLE at gamma-pin strike (max theta in chop)
+
+  7d ATM IV=49.5%  |  24h RV=27.0%  |  IV/RV=1.84x
+  GARCH 1d=45.3%  |  7d IV vs GARCH=+4.2%
+  DVOL=55.4  |  7d chg=-5.5
+
+  KEY LEVELS:
+  Spot          : $2,314.07
+  24h range     : $2,297.70 – $2,356.71
+  Gamma pin (nearest expiry) : 2310
+  RV breakout threshold : 40.5% (+50% current RV)
+  IV expansion trigger  : 45% (GARCH forecast)
+
+  INVALIDATION (cut/reassess if):
+  • Spot breaks below $2,198 (-5%) on a close
+  • 7d ATM IV jumps above 64% (+30% current)
+  • DVOL crosses 60 (7d high + 5pts)
+  • OKX 8h funding goes below -0.04%/8h (active deleveraging)
+  • Monday/Tuesday gap open >2.5% in either direction
+
+  KNOWN DATA GAPS THIS REPORT:
+  • Bybit funding rate   (geofenced)
+  • OI 24h delta         (OKX API 404)
+  • CEX flow / whales    (Dune — no key)
+  • Block trades >$5M    (no public endpoint)
+  • 30d avg RR/IV history(no historical surface API)
+  • CryptoPanic/LunarCrush(no key)
+  • Macro calendar       (Perplexity not connected)
+
+═════════════════════════════════════════════════════════════════
+  END OF BRIEF  |  2026-05-04 00:36 UTC
+═════════════════════════════════════════════════════════════════
