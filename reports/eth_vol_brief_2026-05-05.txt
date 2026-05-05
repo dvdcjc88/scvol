@@ -1,0 +1,111 @@
+═════════════════════════════════════════════════════════════════
+  ETH VOL DESK — MORNING BRIEF
+  Generated : 2026-05-05 00:01 UTC  (23:00 SGT)
+═════════════════════════════════════════════════════════════════
+
+ETH Spot : $2,346.35
+24h range: $2,309.23 – $2,399.00  (3.8%)
+24h chg  : +1.12%   |   24h vol: $418M
+
+═════════════════════════════════════════════════════════════════
+  SECTION 1 — REGIME STATE
+═════════════════════════════════════════════════════════════════
+
+  RV (24h from 1m): CC=46.7%  Park=43.5%  GK=42.2%
+  RV (5m):          CC=46.3%  Park=45.7%  GK=45.5%
+  7d  RV : 12.0%
+  30d RV : 42.1%
+  90d RV : 51.9%
+  7d RV percentile vs history : 0th
+
+  GARCH(1,1): α=0.1013  β=0.5967  persist=0.6980
+  1d fwd vol: 44.6%   5d fwd vol: 47.5%
+
+  Deribit DVOL : 55.9  (7d ago 59.3, Δ-3.5  range 54.1–59.8)
+  OKX funding  : 0.0034%/8h  next=0.0000%  ann=3.73%
+  Deribit fund : 0.0010%/8h (24h avg)  ann=1.11%
+  Bybit funding: DATA GAP (server geofenced)
+  OKX ETH OI   : 78,360 ETH  ($184M)
+  Deribit OI   : 310.9M contracts
+
+  REGIME VERDICT: EXPANSION
+  24h range 3.8% | 7d RV 0th pct | chg +1.12%
+
+═════════════════════════════════════════════════════════════════
+  SECTION 2 — VOL SURFACE DISLOCATIONS
+═════════════════════════════════════════════════════════════════
+
+  ATM IV Term Structure:
+  Tenor       DTE  ATM Strike    ATM IV   GARCH diff  Rating  
+  ------------------------------------------------------------
+  ~0d         1.0        2340     45.1%        +0.6%  FAIR
+  1d          2.0        2340     47.0%        +2.4%  RICH
+  2d          3.0        2350     48.4%        +3.9%  RICH
+  3d         10.0        2350     49.7%        +5.2%  RICH
+  14d        17.0        2350     51.5%        +7.0%  RICH
+  30d        24.0        2350     53.0%        +8.5%  RICH
+  60d        52.0        2300     56.4%       +11.9%  RICH
+  90d        87.0        2400     57.8%       +13.2%  RICH
+
+  Term structure: CONTANGO
+
+  25-Delta Risk Reversals:
+  7d: RR=-0.50%  (C25=49.4% K2425  P25=49.9% K2275)  → PUT SKEW
+  30d: RR=-2.64%  (C25=52.6% K2550  P25=55.3% K2150)  → PUT SKEW
+
+  GEX — Top Gamma Strikes:
+  Today (260506 DTE=1.0d): K2350.0(25.1m) | K2325.0(23.6m) | K2375.0(22.5m)
+    Dealer: LONG GAMMA (pin)   C/P gamma ratio: 1.00
+  7d (260508 DTE=3.0d): K2350.0(14.9m) | K2300.0(13.2m) | K2400.0(13.2m)
+    Dealer: LONG GAMMA (pin)   C/P gamma ratio: 1.00
+
+═════════════════════════════════════════════════════════════════
+  SECTION 3 — FLOW & POSITIONING
+═════════════════════════════════════════════════════════════════
+  Dune (CEX flows/whales): DATA GAP — API key required
+  Block trades >$5M      : DATA GAP — no public endpoint
+  CoinGecko sentiment bullish: 83.33%
+  CoinGecko 24h volume       : $23728M
+
+═════════════════════════════════════════════════════════════════
+  SECTION 4 — NARRATIVE & EVENT RISK
+═════════════════════════════════════════════════════════════════
+  CryptoPanic  : DATA GAP — API key required
+  LunarCrush   : DATA GAP — API key required
+  Bybit funding: DATA GAP — geofenced
+  Perplexity macro calendar: not connected
+  → Manually check: FOMC speakers, CPI, ETH ETF flows (Blackrock ETHA/Fidelity FETH),
+    token unlocks (Tokenomist), SEC filings, Ethereum network events.
+
+═════════════════════════════════════════════════════════════════
+  SECTION 5 — ACTIONABLE BRIEF
+═════════════════════════════════════════════════════════════════
+
+  REGIME : EXPANSION
+
+  KEY LEVELS:
+  Spot          : $2,346.35
+  24h range     : $2,309.23 – $2,399.00
+  Gamma pin (nearest expiry) : 2350
+  RV breakout threshold : 70.0% (+50% current RV)
+  IV expansion trigger  : 45% (GARCH forecast)
+
+  INVALIDATION (cut/reassess if):
+  • Spot breaks below $2,229 (-5%) on a close
+  • 7d ATM IV jumps above 65% (+30% current)
+  • DVOL crosses 61 (7d high + 5pts)
+  • OKX 8h funding goes below -0.04%/8h (active deleveraging)
+  • Monday/Tuesday gap open >2.5% in either direction
+
+  KNOWN DATA GAPS THIS REPORT:
+  • Bybit funding rate   (geofenced)
+  • OI 24h delta         (OKX API 404)
+  • CEX flow / whales    (Dune — no key)
+  • Block trades >$5M    (no public endpoint)
+  • 30d avg RR/IV history(no historical surface API)
+  • CryptoPanic/LunarCrush(no key)
+  • Macro calendar       (Perplexity not connected)
+
+═════════════════════════════════════════════════════════════════
+  END OF BRIEF  |  2026-05-05 00:01 UTC
+═════════════════════════════════════════════════════════════════
