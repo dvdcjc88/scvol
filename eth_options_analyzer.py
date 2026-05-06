@@ -37,13 +37,27 @@ TOP_N              = 10       # results per category
 
 # ── Deribit API helpers ───────────────────────────────────────────────────────
 
-def deribit_get(method: str, params: dict = None) -> any:
-    r = requests.get(f"{DERIBIT_BASE}/{method}", params=params or {}, timeout=15)
-    r.raise_for_status()
-    body = r.json()
-    if "error" in body:
-        raise RuntimeError(f"Deribit error [{method}]: {body['error']}")
-    return body["result"]
+def deribit_get(method: str, params: dict = None, _retries: int = 5) -> any:
+    for attempt in range(1, _retries + 1):
+        try:
+            r = requests.get(f"{DERIBIT_BASE}/{method}", params=params or {}, timeout=15)
+            if r.status_code == 503:
+                body = r.json() if r.content else {}
+                code = body.get("error", {}).get("code")
+                if code == 11051:
+                    wait = attempt * 10
+                    print(f"  Deribit in maintenance — retrying in {wait}s (attempt {attempt}/{_retries})...")
+                    time.sleep(wait)
+                    continue
+            r.raise_for_status()
+            body = r.json()
+            if "error" in body:
+                raise RuntimeError(f"Deribit error [{method}]: {body['error']}")
+            return body["result"]
+        except requests.exceptions.HTTPError:
+            if attempt == _retries:
+                raise
+    raise RuntimeError(f"Deribit unreachable after {_retries} attempts [{method}]")
 
 
 def get_eth_spot() -> float:
@@ -195,9 +209,12 @@ def analyze(spot: float, summaries: list[dict], rv: float) -> tuple[list, list]:
             "open_interest":  float(item.get("open_interest", 0) or 0),
         })
 
+    # Only contracts expiring within 30 days
+    rows = [r for r in rows if r["T_days"] <= 30]
+
     overpriced = sorted(
         [r for r in rows if r["iv_prem_pts"] >= IV_PREMIUM_THRESH],
-        key=lambda x: x["iv_prem_pts"],
+        key=lambda x: x["mark_iv_pct"],   # highest absolute IV first
         reverse=True,
     )[:TOP_N]
 
@@ -210,58 +227,63 @@ def analyze(spot: float, summaries: list[dict], rv: float) -> tuple[list, list]:
 
 def format_report(spot: float, rv: float, overpriced: list, high_gamma: list) -> str:
     ts     = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    rv_pct = round(rv * 100, 2)
+    rv_pct = rv * 100
 
-    lines = [
-        f"\U0001f4ca *ETH Options Analysis (Deribit)* — {ts}",
+    def sym(s: str) -> str:
+        return s[4:]  # "ETH-16MAY25-2500-C" → "16MAY25-2500-C"
+
+    # ── Overpriced table ──────────────────────────────────────────────────────
+    OV_HDR = (f"{'Contract':<16} {'DTE':>4}  "
+              f"{'MarkIV':>6}  {'IV+pts':>6}  {'Mark($)':>9}  {'Delta':>7}")
+    SEP_O  = "─" * len(OV_HDR)
+
+    def ov_row(r: dict) -> str:
+        price = f"${r['mark_usd']:,.2f}"
+        return (
+            f"{sym(r['symbol']):<16} {int(r['T_days']):>3}d  "
+            f"{r['mark_iv_pct']:>5.1f}%  {r['iv_prem_pts']:>+6.1f}  "
+            f"{price:>9}  {r['delta']:>+7.3f}"
+        )
+
+    ov_body = (
+        "\n".join(ov_row(r) for r in overpriced)
+        if overpriced
+        else f"  No contracts with IV prem >= {IV_PREMIUM_THRESH:.0f}pts in <=30d window."
+    )
+    ov_table = f"```\n{OV_HDR}\n{SEP_O}\n{ov_body}\n{SEP_O}```"
+
+    # ── High Gamma table ──────────────────────────────────────────────────────
+    GM_HDR = (f"{'Contract':<16} {'DTE':>4}  "
+              f"{'Gamma':>8}  {'MarkIV':>6}  {'Delta':>7}  {'Theta/d':>8}")
+    SEP_G  = "─" * len(GM_HDR)
+
+    def gm_row(r: dict) -> str:
+        return (
+            f"{sym(r['symbol']):<16} {int(r['T_days']):>3}d  "
+            f"{r['gamma']:>8.5f}  {r['mark_iv_pct']:>5.1f}%  "
+            f"{r['delta']:>+7.3f}  {r['theta']:>+8.2f}"
+        )
+
+    gm_body = (
+        "\n".join(gm_row(r) for r in high_gamma)
+        if high_gamma
+        else "  No contracts found."
+    )
+    gm_table = f"```\n{GM_HDR}\n{SEP_G}\n{gm_body}\n{SEP_G}```"
+
+    # ── Assemble ──────────────────────────────────────────────────────────────
+    return "\n".join([
+        f"📊 *ETH Options Report* — {ts}",
+        f"Spot: *${spot:,.2f}*  |  30d RV: *{rv_pct:.1f}%*  |  Filter: ≤30d expiry",
         "",
-        f"\U0001f537 ETH Spot: *${spot:,.2f}*",
-        f"\U0001f4c9 30d Realized Vol: *{rv_pct}%*",
+        f"🔴 *OVERPRICED* — by highest IV  (prem ≥{IV_PREMIUM_THRESH:.0f}pts above RV)",
+        ov_table,
         "",
-        "━" * 22,
-        f"\U0001f534 *OVERPRICED OPTIONS* (IV prem ≥ {IV_PREMIUM_THRESH:.0f} vol pts)",
-        "_(High IV premium → rich to sell covered positions)_",
+        f"⚡ *HIGH GAMMA* — top {TOP_N} contracts  (≤30d)",
+        gm_table,
         "",
-    ]
-
-    if overpriced:
-        for r in overpriced:
-            pp = f"{r['price_prem_pct']:+.1f}%" if r["price_prem_pct"] is not None else "n/a"
-            lines += [
-                f"▸ `{r['symbol']}`",
-                f"  {r['flag']} | Strike ${r['strike']:,.0f} | Exp {r['expiry']} ({r['T_days']}d)",
-                f"  Mark ${r['mark_usd']:.2f}  Theo(RV) ${r['theo_usd']:.2f}  PricePrem {pp}",
-                f"  MarkIV {r['mark_iv_pct']}%  AskIV {r['ask_iv_pct']}%  RV {r['rv_pct']}%  *+{r['iv_prem_pts']} pts*",
-                f"  Δ={r['delta']:+.3f}  Γ={r['gamma']:.6f}  Θ={r['theta']:.4f}  ν={r['vega']:.4f}",
-                f"  Vol {r['volume']:,.0f}  OI {r['open_interest']:,.0f}",
-                "",
-            ]
-    else:
-        lines += [f"_No options with IV prem ≥ {IV_PREMIUM_THRESH:.0f} pts found._", ""]
-
-    lines += [
-        "━" * 22,
-        f"⚡ *HIGH GAMMA OPTIONS* (Top {TOP_N})",
-        "_(Near-ATM / short-dated → explosive delta risk)_",
-        "",
-    ]
-
-    for r in high_gamma:
-        lines += [
-            f"▸ `{r['symbol']}`",
-            f"  {r['flag']} | Strike ${r['strike']:,.0f} | Exp {r['expiry']} ({r['T_days']}d)",
-            f"  Mark ${r['mark_usd']:.2f}  IV {r['mark_iv_pct']}%",
-            f"  *Γ={r['gamma']:.6f}*  Δ={r['delta']:+.3f}  Θ={r['theta']:.4f}  ν={r['vega']:.4f}",
-            f"  Vol {r['volume']:,.0f}  OI {r['open_interest']:,.0f}",
-            "",
-        ]
-
-    lines += [
-        "━" * 22,
         "⚠️ _Not financial advice. Always DYOR._",
-    ]
-
-    return "\n".join(lines)
+    ])
 
 
 # ── Telegram ──────────────────────────────────────────────────────────────────
