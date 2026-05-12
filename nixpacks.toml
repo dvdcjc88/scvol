@@ -7,5 +7,9 @@ cmds = [
   "/opt/venv/bin/pip install -r eth_alerts/requirements.txt"
 ]
 
+# Explicitly empty build phase — suppresses auto-detected npm run build
+[phases.build]
+cmds = []
+
 [start]
 cmd = "cd eth_alerts && /opt/venv/bin/python main.py"
