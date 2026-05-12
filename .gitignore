@@ -32,3 +32,23 @@ dist-ssr
 
 # Vercel
 .vercel
+
+# Python agent
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# SQLite database files
+*.db
+*.db-wal
+*.db-shm
+
+# Downloaded raw data files (large)
+data/raw/
+
+# Python environment
+.python-version

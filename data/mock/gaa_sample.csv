@@ -1,0 +1,102 @@
+year,region,province,district_code,agency,department,program,allocation_php,obligation_php,disbursement_php
+2023,NCR,Metro Manila,NCR-1,DPWH,Department of Public Works and Highways,Road Network Development,450000000,440000000,420000000
+2023,NCR,Metro Manila,NCR-2,DPWH,Department of Public Works and Highways,Flood Control Program,380000000,370000000,355000000
+2023,NCR,Metro Manila,NCR-3,DepEd,Department of Education,School Building Program,120000000,115000000,110000000
+2023,NCR,Metro Manila,NCR-4,DOH,Department of Health,Rural Health Program,95000000,90000000,85000000
+2023,NCR,Metro Manila,NCR-5,DSWD,Department of Social Welfare,4Ps Conditional Cash Transfer,200000000,195000000,190000000
+2023,NCR,Metro Manila,NCR-6,DILG,Department of Interior and Local Government,Local Government Support,75000000,72000000,68000000
+2023,Region I,Ilocos Norte,R1-1,DPWH,Department of Public Works and Highways,Farm-to-Market Roads,180000000,175000000,168000000
+2023,Region I,Ilocos Sur,R1-2,DepEd,Department of Education,School Building Program,85000000,82000000,78000000
+2023,Region I,La Union,R1-3,DOH,Department of Health,PhilHealth Indigent Program,65000000,62000000,59000000
+2023,Region I,Pangasinan,R1-4,DPWH,Department of Public Works and Highways,Bridge Construction,290000000,280000000,265000000
+2023,Region I,Pangasinan,R1-5,DSWD,Department of Social Welfare,Pantawid Pamilya,150000000,145000000,138000000
+2023,Region II,Cagayan,R2-1,DPWH,Department of Public Works and Highways,National Road Improvement,220000000,215000000,205000000
+2023,Region II,Isabela,R2-2,DA,Department of Agriculture,Rice Competitiveness Enhancement,130000000,125000000,119000000
+2023,Region II,Nueva Vizcaya,R2-3,DepEd,Department of Education,Alternative Learning System,45000000,43000000,41000000
+2023,Region II,Quirino,R2-4,DPWH,Department of Public Works and Highways,Flood Control Program,95000000,92000000,88000000
+2023,Region III,Bulacan,R3-1,DPWH,Department of Public Works and Highways,Road Network Development,520000000,510000000,490000000
+2023,Region III,Bulacan,R3-2,DepEd,Department of Education,School Building Program,140000000,135000000,129000000
+2023,Region III,Pampanga,R3-3,DPWH,Department of Public Works and Highways,Bridge Construction,680000000,670000000,650000000
+2023,Region III,Pampanga,R3-4,DOH,Department of Health,Hospital Infrastructure,185000000,180000000,172000000
+2023,Region III,Tarlac,R3-5,DA,Department of Agriculture,Farm Support Programs,110000000,105000000,98000000
+2023,Region III,Zambales,R3-6,DPWH,Department of Public Works and Highways,Port Development,165000000,160000000,153000000
+2023,Region III,Nueva Ecija,R3-7,NIA,National Irrigation Administration,Irrigation Development,245000000,240000000,230000000
+2023,Region III,Aurora,R3-8,DepEd,Department of Education,School Building Program,58000000,55000000,52000000
+2023,Region IV-A,Cavite,R4A-1,DPWH,Department of Public Works and Highways,Road Network Development,590000000,580000000,558000000
+2023,Region IV-A,Laguna,R4A-2,DepEd,Department of Education,School Building Program,175000000,170000000,162000000
+2023,Region IV-A,Batangas,R4A-3,DPWH,Department of Public Works and Highways,Bridge Construction,420000000,410000000,395000000
+2023,Region IV-A,Rizal,R4A-4,DOH,Department of Health,Rural Health Program,88000000,85000000,81000000
+2023,Region IV-A,Quezon,R4A-5,DA,Department of Agriculture,Coconut Industry Development,195000000,188000000,179000000
+2023,Region IV-B,Palawan,R4B-1,DPWH,Department of Public Works and Highways,Road Network Development,280000000,270000000,258000000
+2023,Region IV-B,Occidental Mindoro,R4B-2,DepEd,Department of Education,School Building Program,72000000,69000000,65000000
+2023,Region V,Albay,R5-1,DPWH,Department of Public Works and Highways,Flood Control Program,195000000,188000000,179000000
+2023,Region V,Camarines Sur,R5-2,DepEd,Department of Education,School Building Program,155000000,149000000,142000000
+2023,Region V,Camarines Norte,R5-3,DA,Department of Agriculture,Fisheries Program,68000000,65000000,61000000
+2023,Region VI,Iloilo,R6-1,DPWH,Department of Public Works and Highways,Road Network Development,310000000,300000000,288000000
+2023,Region VI,Capiz,R6-2,DA,Department of Agriculture,Rice Program,125000000,120000000,114000000
+2023,Region VI,Antique,R6-3,DepEd,Department of Education,School Building Program,62000000,59000000,56000000
+2023,Region VII,Cebu,R7-1,DPWH,Department of Public Works and Highways,Road Network Development,480000000,468000000,450000000
+2023,Region VII,Bohol,R7-2,DOT,Department of Tourism,Tourism Infrastructure,145000000,140000000,133000000
+2023,Region VII,Negros Oriental,R7-3,DepEd,Department of Education,School Building Program,98000000,94000000,90000000
+2023,Region VIII,Leyte,R8-1,DPWH,Department of Public Works and Highways,Rehabilitation Program,350000000,340000000,325000000
+2023,Region VIII,Samar,R8-2,DepEd,Department of Education,School Building Program,112000000,108000000,103000000
+2023,Region IX,Zamboanga del Norte,R9-1,DPWH,Department of Public Works and Highways,Road Network Development,198000000,190000000,182000000
+2023,Region IX,Zamboanga del Sur,R9-2,DA,Department of Agriculture,Corn Program,88000000,84000000,80000000
+2023,Region X,Misamis Oriental,R10-1,DPWH,Department of Public Works and Highways,Bridge Construction,265000000,258000000,245000000
+2023,Region X,Bukidnon,R10-2,DA,Department of Agriculture,Livestock Program,95000000,91000000,87000000
+2023,Region XI,Davao del Norte,R11-1,DPWH,Department of Public Works and Highways,Road Network Development,395000000,385000000,370000000
+2023,Region XI,Davao del Sur,R11-2,DepEd,Department of Education,School Building Program,145000000,140000000,134000000
+2023,Region XII,Cotabato,R12-1,DPWH,Department of Public Works and Highways,Farm-to-Market Roads,218000000,210000000,200000000
+2023,Region XII,Sultan Kudarat,R12-2,DA,Department of Agriculture,Rice Program,105000000,100000000,95000000
+2023,Region XIII,Surigao del Norte,R13-1,DPWH,Department of Public Works and Highways,Road Network Development,172000000,165000000,158000000
+2023,CAR,Benguet,CAR-1,DPWH,Department of Public Works and Highways,Mountain Road Development,145000000,140000000,133000000
+2023,BARMM,Maguindanao,BARMM-1,DPWH,Department of Public Works and Highways,Peace and Development Roads,320000000,310000000,296000000
+2023,BARMM,Lanao del Sur,BARMM-2,DepEd,Department of Education,School Building Program,135000000,128000000,122000000
+2024,NCR,Metro Manila,NCR-1,DPWH,Department of Public Works and Highways,Road Network Development,480000000,470000000,445000000
+2024,NCR,Metro Manila,NCR-2,DPWH,Department of Public Works and Highways,Flood Control Program,410000000,400000000,382000000
+2024,NCR,Metro Manila,NCR-3,DepEd,Department of Education,School Building Program,128000000,122000000,116000000
+2024,NCR,Metro Manila,NCR-4,DOH,Department of Health,Rural Health Program,102000000,97000000,91000000
+2024,NCR,Metro Manila,NCR-5,DSWD,Department of Social Welfare,4Ps Conditional Cash Transfer,215000000,208000000,198000000
+2024,Region I,Ilocos Norte,R1-1,DPWH,Department of Public Works and Highways,Farm-to-Market Roads,195000000,190000000,181000000
+2024,Region I,Pangasinan,R1-4,DPWH,Department of Public Works and Highways,Bridge Construction,315000000,305000000,289000000
+2024,Region III,Bulacan,R3-1,DPWH,Department of Public Works and Highways,Road Network Development,545000000,532000000,510000000
+2024,Region III,Pampanga,R3-3,DPWH,Department of Public Works and Highways,Bridge Construction,720000000,710000000,685000000
+2024,Region III,Tarlac,R3-5,DA,Department of Agriculture,Farm Support Programs,115000000,110000000,103000000
+2024,Region IV-A,Cavite,R4A-1,DPWH,Department of Public Works and Highways,Road Network Development,625000000,615000000,590000000
+2024,Region IV-A,Batangas,R4A-3,DPWH,Department of Public Works and Highways,Bridge Construction,445000000,435000000,418000000
+2024,Region VII,Cebu,R7-1,DPWH,Department of Public Works and Highways,Road Network Development,510000000,498000000,478000000
+2024,Region VIII,Leyte,R8-1,DPWH,Department of Public Works and Highways,Rehabilitation Program,375000000,362000000,348000000
+2024,Region XI,Davao del Norte,R11-1,DPWH,Department of Public Works and Highways,Road Network Development,420000000,410000000,394000000
+2024,BARMM,Maguindanao,BARMM-1,DPWH,Department of Public Works and Highways,Peace and Development Roads,890000000,875000000,840000000
+2024,BARMM,Lanao del Sur,BARMM-2,DepEd,Department of Education,School Building Program,142000000,135000000,128000000
+2024,Region III,Nueva Ecija,R3-7,DPWH,Department of Public Works and Highways,Irrigation Rehab,1850000000,1820000000,1750000000
+2024,Region I,Ilocos Sur,R1-2,DPWH,Department of Public Works and Highways,Road Widening,920000000,900000000,870000000
+2024,Region V,Camarines Sur,R5-2,DPWH,Department of Public Works and Highways,Flood Control,1200000000,1180000000,1150000000
+2024,Region XII,Cotabato,R12-1,DPWH,Department of Public Works and Highways,Road Network,580000000,25000000,10000000
+2024,Region IX,Zamboanga del Norte,R9-1,DPWH,Department of Public Works and Highways,Bridge Projects,750000000,720000000,695000000
+2024,NCR,Metro Manila,NCR-6,DPWH,Department of Public Works and Highways,Urban Road Devel,1500000000,50000000,5000000
+2024,Region VI,Iloilo,R6-1,DepEd,Department of Education,School Construction,450000000,440000000,425000000
+2024,Region VII,Bohol,R7-2,DPWH,Department of Public Works and Highways,Port and Road Dev,680000000,660000000,630000000
+2024,CAR,Benguet,CAR-1,DPWH,Department of Public Works and Highways,Cordillera Roads,520000000,510000000,488000000
+2024,Region II,Cagayan,R2-1,DPWH,Department of Public Works and Highways,Road Improvement,3200000000,3150000000,3080000000
+2024,Region X,Bukidnon,R10-2,DPWH,Department of Public Works and Highways,Farm Roads,320000000,310000000,296000000
+2025,Region III,Nueva Ecija,R3-7,DPWH,Department of Public Works and Highways,Irrigation Infra,2400000000,2350000000,2280000000
+2025,BARMM,Maguindanao,BARMM-1,DPWH,Department of Public Works and Highways,Dev Roads,1200000000,1180000000,1140000000
+2025,Region II,Cagayan,R2-1,DPWH,Department of Public Works and Highways,Road Projects,4500000000,4400000000,4250000000
+2025,NCR,Metro Manila,NCR-1,DPWH,Department of Public Works and Highways,Road Network Development,495000000,485000000,462000000
+2025,Region I,Pangasinan,R1-4,DPWH,Department of Public Works and Highways,Bridge Construction,335000000,325000000,310000000
+2025,Region IV-A,Cavite,R4A-1,DPWH,Department of Public Works and Highways,Road Network Development,660000000,648000000,622000000
+2025,Region VII,Cebu,R7-1,DPWH,Department of Public Works and Highways,Road Network Development,540000000,528000000,505000000
+2025,Region XI,Davao del Norte,R11-1,DPWH,Department of Public Works and Highways,Road Network Development,445000000,435000000,418000000
+2025,Region III,Pampanga,R3-3,DPWH,Department of Public Works and Highways,Bridge Construction,750000000,738000000,712000000
+2025,Region V,Camarines Sur,R5-2,DepEd,Department of Education,School Building Program,168000000,160000000,153000000
+2025,Region VI,Iloilo,R6-1,DPWH,Department of Public Works and Highways,Road Network Development,332000000,322000000,308000000
+2025,Region XII,Cotabato,R12-1,DPWH,Department of Public Works and Highways,Farm-to-Market Roads,235000000,228000000,218000000
+2025,NCR,Metro Manila,NCR-6,DPWH,Department of Public Works and Highways,Urban Infra,1800000000,1750000000,1680000000
+2025,Region IX,Zamboanga del Norte,R9-1,DA,Department of Agriculture,Agri Support,285000000,275000000,262000000
+2025,Region VIII,Leyte,R8-1,DPWH,Department of Public Works and Highways,Yolanda Rehab,400000000,390000000,374000000
+2025,CAR,Benguet,CAR-1,DPWH,Department of Public Works and Highways,Mountain Road Development,158000000,152000000,145000000
+2025,Region X,Misamis Oriental,R10-1,DPWH,Department of Public Works and Highways,Bridge Construction,282000000,274000000,261000000
+2025,BARMM,Lanao del Sur,BARMM-2,DPWH,Department of Public Works and Highways,Road Connectivity,950000000,920000000,880000000
+2025,Region XIII,Surigao del Norte,R13-1,DPWH,Department of Public Works and Highways,Road Network Development,188000000,180000000,172000000
+2025,Region I,Ilocos Sur,R1-2,DPWH,Department of Public Works and Highways,Road Network,350000000,340000000,325000000
