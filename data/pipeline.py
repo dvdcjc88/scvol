@@ -80,6 +80,14 @@ async def get_db_stats() -> dict:
         congress_count = (await session.execute(text("SELECT COUNT(*) FROM congressmen"))).scalar() or 0
         anomaly_count = (await session.execute(text("SELECT COUNT(*) FROM anomalies"))).scalar() or 0
 
+        # Document stats (table may not exist yet)
+        try:
+            doc_count = (await session.execute(text("SELECT COUNT(*) FROM documents"))).scalar() or 0
+            doc_ok = (await session.execute(text("SELECT COUNT(*) FROM documents WHERE status='ok'"))).scalar() or 0
+            doc_rows = (await session.execute(text("SELECT COUNT(*) FROM document_rows"))).scalar() or 0
+        except Exception:
+            doc_count = doc_ok = doc_rows = 0
+
         latest_log = (await session.execute(
             text("SELECT source, finished_at, is_mock FROM ingestion_logs WHERE status='success' ORDER BY finished_at DESC LIMIT 1")
         )).fetchone()
@@ -88,6 +96,46 @@ async def get_db_stats() -> dict:
         "budget_items": budget_count,
         "congressmen": congress_count,
         "anomalies": anomaly_count,
+        "documents": doc_count,
+        "documents_ok": doc_ok,
+        "document_rows": doc_rows,
         "last_refresh": latest_log[1] if latest_log else None,
         "data_source": "mock" if (latest_log and latest_log[2]) else "live",
     }
+
+
+async def search_documents(query: str, limit: int = 10) -> list[dict]:
+    """Full-text search across document raw_text."""
+    async with get_session() as session:
+        result = await session.execute(
+            text("""
+                SELECT id, source, doc_type, table_code, title, fiscal_year,
+                       page_count, status, scraped_at,
+                       SUBSTR(raw_text, 1, 300) as excerpt
+                FROM documents
+                WHERE status = 'ok'
+                  AND (raw_text LIKE :q OR title LIKE :q OR table_code LIKE :q2)
+                LIMIT :limit
+            """),
+            {"q": f"%{query}%", "q2": f"%{query.upper()}%", "limit": limit}
+        )
+        rows = result.fetchall()
+
+    return [dict(r._mapping) for r in rows]
+
+
+async def list_documents(source: str | None = None, limit: int = 30) -> list[dict]:
+    """List all ingested documents."""
+    where = "WHERE status='ok'" + (f" AND source='{source}'" if source else "")
+    async with get_session() as session:
+        result = await session.execute(
+            text(f"""
+                SELECT source, doc_type, table_code, title, fiscal_year,
+                       page_count, file_size_bytes, scraped_at
+                FROM documents {where}
+                ORDER BY source, table_code
+                LIMIT {limit}
+            """)
+        )
+        rows = result.fetchall()
+    return [dict(r._mapping) for r in rows]

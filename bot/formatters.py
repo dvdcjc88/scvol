@@ -52,14 +52,22 @@ def format_status(stats: dict) -> str:
 
     source_icon = "📦 Mock" if source == "mock" else "🌐 Live"
 
+    docs = stats.get("documents", 0)
+    docs_ok = stats.get("documents_ok", 0)
+    doc_rows = stats.get("document_rows", 0)
+
     return (
         "<b>📊 System Status</b>\n\n"
         f"Data source: {source_icon}\n"
         f"Budget records: {budget:,}\n"
         f"Congressmen: {congress:,}\n"
         f"Detected anomalies: {anomalies:,}\n"
+        f"Documents: {docs_ok:,} / {docs:,} scraped ({doc_rows:,} rows)\n"
         f"Last refresh: {refresh_str}\n\n"
-        "<i>Use /refresh to force a data update.</i>"
+        "<i>/refresh — reload budget data\n"
+        "/scrape — download DBM/BetterGov/PhilGEPS documents\n"
+        "/docs — browse documents\n"
+        "/search [query] — search documents</i>"
     )
 
 
@@ -68,19 +76,117 @@ def format_help() -> str:
         "<b>🔍 PH Spending Anomaly Bot</b>\n\n"
         "I analyze Philippine government budget data to flag suspicious spending patterns "
         "and link them to congressmen.\n\n"
-        "<b>Commands:</b>\n"
+        "<b>Analysis Commands:</b>\n"
         "/anomalies — Top 10 anomalies nationwide\n"
         "/anomalies [region] — Filter by region (e.g. <code>Region III</code>)\n"
         "/congressman [name] — Risk profile for a rep\n"
         "/agency [name] — Anomalies for an agency (e.g. <code>DPWH</code>)\n"
         "/regions — List all regions\n"
-        "/top_risk — Top 5 highest-risk congressmen\n"
+        "/top_risk — Top 5 highest-risk congressmen\n\n"
+        "<b>Document Commands:</b>\n"
+        "/docs — List all scraped government documents\n"
+        "/docs [source] — Filter: <code>dbm_besf</code> <code>dbm_gaa</code> <code>bettergov</code> <code>philgeps</code>\n"
+        "/search [query] — Full-text search across all documents\n"
+        "/scrape — Trigger full document scraping (admin only)\n\n"
+        "<b>System:</b>\n"
         "/status — Database and refresh status\n"
-        "/refresh — Force data re-download\n"
+        "/refresh — Force budget data re-download\n"
         "/help — This message\n\n"
         "<i>⚠️ Flags indicate statistical patterns in public data, "
         "not proven wrongdoing. Always verify with primary sources.</i>"
     )
+
+
+def format_document_list(docs: list[dict]) -> list[str]:
+    if not docs:
+        return ["<b>📄 No documents ingested yet.</b>\n\nUse /scrape to download DBM, BetterGov, and PhilGEPS documents."]
+
+    source_icons = {
+        "dbm_besf": "📊", "dbm_gaa": "📋", "bettergov": "🌐",
+        "philgeps": "🏛️",
+    }
+    source_labels = {
+        "dbm_besf": "DBM — BESF Tables",
+        "dbm_gaa": "DBM — General Appropriations Act",
+        "bettergov": "BetterGov.PH Open Data",
+        "philgeps": "PhilGEPS Procurement Awards",
+    }
+
+    lines = ["<b>📄 Ingested Government Documents</b>\n"]
+    current_source = None
+    for doc in docs:
+        source = doc.get("source", "")
+        if source != current_source:
+            current_source = source
+            icon = source_icons.get(source, "📄")
+            label = source_labels.get(source, source.upper())
+            lines.append(f"\n{icon} <b>{label}</b>")
+
+        code = str(doc.get("table_code") or "")
+        title = str(doc.get("title") or code)
+        fy = doc.get("fiscal_year") or ""
+        pages = doc.get("page_count") or ""
+        size = doc.get("file_size_bytes") or 0
+        size_str = f"{size/1024:.0f}KB" if size else ""
+        scraped = doc.get("scraped_at")
+        scraped_str = str(scraped or "")[:10]
+
+        detail_parts = [x for x in [f"FY{fy}" if fy else "", f"{pages}pp" if pages else "", size_str, scraped_str] if x]
+        detail = " · ".join(detail_parts)
+
+        lines.append(f"  <code>{code:6s}</code> {html.escape(title[:70])}"
+                     + (f" <i>({detail})</i>" if detail else ""))
+
+    return chunk_message("\n".join(lines))
+
+
+def format_search_results(results: list[dict], query: str) -> list[str]:
+    if not results:
+        return [f"<b>🔍 No results for:</b> <code>{html.escape(query)}</code>\n\n"
+                "<i>Try /docs to see what's been ingested, or /scrape to download new documents.</i>"]
+
+    lines = [f"<b>🔍 Search: </b><code>{html.escape(query)}</code> — {len(results)} result(s)\n"]
+    for r in results:
+        code = str(r.get("table_code") or "")
+        title = str(r.get("title") or code)
+        fy = r.get("fiscal_year") or ""
+        excerpt = str(r.get("excerpt") or "")[:200].replace("\n", " ")
+        lines.append(
+            f"\n<b>{html.escape(title[:60])}</b>"
+            + (f" <i>(FY{fy})</i>" if fy else "")
+            + f"\n<code>{code}</code> · {html.escape(excerpt)}"
+        )
+
+    return chunk_message("\n".join(lines))
+
+
+def format_scrape_result(results: dict) -> str:
+    lines = ["<b>🔄 Document Scraping Complete</b>\n"]
+
+    dbm = results.get("dbm", {})
+    if isinstance(dbm, dict) and not dbm.get("error"):
+        besf = dbm.get("besf", {})
+        gaa = dbm.get("gaa", {})
+        lines.append(f"📊 <b>DBM BESF</b>: {besf.get('downloaded', 0)} downloaded, "
+                     f"{besf.get('parsed', 0)} parsed, {besf.get('failed', 0)} not found")
+        lines.append(f"📋 <b>DBM GAA</b>: {gaa.get('downloaded', 0)} downloaded, "
+                     f"{gaa.get('parsed', 0)} parsed")
+    elif isinstance(dbm, dict) and dbm.get("error"):
+        lines.append(f"📊 DBM: ❌ {html.escape(str(dbm['error'])[:100])}")
+
+    bg = results.get("bettergov", {})
+    if isinstance(bg, dict) and not bg.get("error"):
+        bgv = bg.get("bettergov", {})
+        pgv = bg.get("philgeps", {})
+        lines.append(f"🌐 <b>BetterGov</b>: {bgv.get('downloaded', 0)} downloaded, "
+                     f"{bgv.get('failed', 0)} failed")
+        lines.append(f"🏛️ <b>PhilGEPS</b>: {pgv.get('downloaded', 0)} downloaded, "
+                     f"{pgv.get('failed', 0)} failed")
+    elif isinstance(bg, dict) and bg.get("error"):
+        lines.append(f"🌐 BetterGov: ❌ {html.escape(str(bg['error'])[:100])}")
+
+    lines.append("\n<i>Use /docs to browse, /search [term] to query.</i>")
+    return "\n".join(lines)
 
 
 def format_regions() -> str:

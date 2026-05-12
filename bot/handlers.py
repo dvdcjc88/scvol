@@ -20,15 +20,18 @@ from telegram.ext import (
 from agents.crew import build_crew
 from bot.formatters import (
     format_anomaly_report,
+    format_document_list,
     format_error,
     format_help,
     format_regions,
+    format_scrape_result,
+    format_search_results,
     format_status,
     chunk_message,
 )
 from config import settings
-from data.ingestion import run_ingestion_pipeline
-from data.pipeline import get_db_stats
+from data.ingestion import run_ingestion_pipeline, run_document_scraping
+from data.pipeline import get_db_stats, search_documents, list_documents
 
 logger = logging.getLogger(__name__)
 
@@ -261,6 +264,56 @@ async def refresh_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         await msg.edit_text(format_error(str(e)), parse_mode="HTML")
 
 
+async def docs_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    source = context.args[0] if context.args else None
+    try:
+        docs = await list_documents(source=source, limit=60)
+        chunks = format_document_list(docs)
+        await _send_chunks(update, chunks)
+    except Exception as e:
+        await update.message.reply_text(format_error(str(e)), parse_mode="HTML")
+
+
+async def search_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not context.args:
+        await update.message.reply_text(
+            "Usage: /search [query]\nExample: /search DPWH Region III infrastructure",
+            parse_mode="HTML",
+        )
+        return
+
+    query = " ".join(context.args)
+    msg = await update.message.reply_text(f"🔍 Searching documents for: <code>{query}</code>...", parse_mode="HTML")
+    try:
+        results = await search_documents(query, limit=8)
+        chunks = format_search_results(results, query)
+        await msg.delete()
+        await _send_chunks(update, chunks)
+    except Exception as e:
+        await msg.edit_text(format_error(str(e)), parse_mode="HTML")
+
+
+async def scrape_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user_id = update.effective_user.id
+    if not _is_admin(user_id):
+        await update.message.reply_text("⛔ Admin-only command.")
+        return
+
+    force = "force" in (context.args or [])
+    msg = await update.message.reply_text(
+        "🔄 Starting document scraping from DBM, BetterGov, and PhilGEPS...\n"
+        "<i>This will take several minutes. Downloading 50+ PDFs.</i>",
+        parse_mode="HTML",
+    )
+    try:
+        results = await run_document_scraping(force=force)
+        text = format_scrape_result(results)
+        await msg.edit_text(text, parse_mode="HTML")
+    except Exception as e:
+        logger.exception("Scrape failed")
+        await msg.edit_text(format_error(str(e)), parse_mode="HTML")
+
+
 async def text_query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     text = update.message.text.lower()
 
@@ -326,6 +379,9 @@ def build_application() -> Application:
     app.add_handler(CommandHandler("top_risk", top_risk_handler))
     app.add_handler(CommandHandler("status", status_handler))
     app.add_handler(CommandHandler("refresh", refresh_handler))
+    app.add_handler(CommandHandler("docs", docs_handler))
+    app.add_handler(CommandHandler("search", search_handler))
+    app.add_handler(CommandHandler("scrape", scrape_handler))
     app.add_handler(CallbackQueryHandler(region_callback_handler, pattern=r"^anomaly:"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_query_handler))
 

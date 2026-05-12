@@ -29,6 +29,37 @@ async def run_ingestion_pipeline(force: bool = False) -> dict:
     else:
         results["congressmen"] = {"status": "skipped", "reason": "data is fresh"}
 
+    # Document scraping (always run if not mock mode, or if forced)
+    if not settings.use_mock_data or force:
+        results["documents"] = await run_document_scraping(force=force)
+    else:
+        results["documents"] = {"status": "skipped", "reason": "mock mode active"}
+
+    return results
+
+
+async def run_document_scraping(force: bool = False) -> dict:
+    """Run DBM BESF, GAA, BetterGov, and PhilGEPS scrapers."""
+    import logging
+    log = logging.getLogger(__name__)
+    results = {}
+
+    try:
+        from data.dbm_scraper import run_dbm_scraper
+        results["dbm"] = await run_dbm_scraper(fiscal_year=2024, force=force)
+        log.info(f"DBM scraping done: {results['dbm']}")
+    except Exception as e:
+        log.error(f"DBM scraper error: {e}")
+        results["dbm"] = {"error": str(e)}
+
+    try:
+        from data.bettergov_scraper import run_bettergov_scraper
+        results["bettergov"] = await run_bettergov_scraper(force=force)
+        log.info(f"BetterGov scraping done: {results['bettergov']}")
+    except Exception as e:
+        log.error(f"BetterGov scraper error: {e}")
+        results["bettergov"] = {"error": str(e)}
+
     return results
 
 
