@@ -1,0 +1,20 @@
+name: Deploy to Railway
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/ethereum-options-alert-w4di3
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy
+        run: railway up --detach
+        env:
+          RAILWAY_TOKEN: 3f8642a5-cfe8-43e1-8cf4-1e570e672847
