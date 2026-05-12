@@ -1,0 +1,18 @@
+# Use apt Python (Ubuntu system) instead of Nix Python.
+# Nix-managed Python causes NumPy wheel incompatibility in the nixpacks
+# Ubuntu container (glibc mismatch). apt Python resolves this.
+[phases.setup]
+aptPkgs = ["python3", "python3-pip", "python3-venv"]
+
+[phases.install]
+cmds = [
+  "python3 -m venv /opt/venv",
+  "/opt/venv/bin/pip install -r eth_alerts/requirements.txt"
+]
+
+# Suppress auto-detected npm run build (package.json in root)
+[phases.build]
+cmds = []
+
+[start]
+cmd = "cd eth_alerts && /opt/venv/bin/python main.py"
