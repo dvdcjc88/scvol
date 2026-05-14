@@ -32,3 +32,10 @@ dist-ssr
 
 # Vercel
 .vercel
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.eth_alert_state.json
+eth_alert.pid
