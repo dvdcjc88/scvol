@@ -32,15 +32,52 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Interactive volunteer cards
+  // Volunteer opportunity modal
+  const modal = document.getElementById('volunteer-modal');
+  const modalTitle = modal.querySelector('.modal-title');
+  const modalBody = modal.querySelector('.modal-body');
+  const modalOverlay = modal.querySelector('.modal-overlay');
+  const modalClose = modal.querySelector('.modal-close');
+  const modalCta = modal.querySelector('.modal-cta');
+
+  const opportunityDetails = {
+    'Community Outreach': 'Help us reach underserved communities by organizing events, delivering resources, and building lasting relationships with local families and organizations.',
+    'Environmental Conservation': 'Work alongside our team to clean up green spaces, plant trees, monitor local ecosystems, and raise environmental awareness in our neighborhoods.',
+    'Education Support': 'Tutor students, mentor young learners, and assist teachers in local schools and after-school programs to help every child reach their potential.',
+  };
+
+  function openModal(title) {
+    modalTitle.textContent = title;
+    modalBody.textContent = opportunityDetails[title] || 'Thank you for your interest! We\'d love to tell you more about this opportunity.';
+    modal.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+    modalClose.focus();
+  }
+
+  function closeModal() {
+    modal.classList.remove('modal-open');
+    document.body.style.overflow = '';
+  }
+
   const volunteerCards = document.querySelectorAll('.volunteer-card');
   volunteerCards.forEach(card => {
     const button = card.querySelector('.btn-secondary');
     if (button) {
       button.addEventListener('click', function() {
-        alert('Thank you for your interest! Please contact us to learn more about this volunteer opportunity.');
+        const title = card.querySelector('h3').textContent;
+        openModal(title);
       });
     }
+  });
+
+  modalOverlay.addEventListener('click', closeModal);
+  modalClose.addEventListener('click', closeModal);
+  modalCta.addEventListener('click', function() {
+    closeModal();
+    document.querySelector('#contact').scrollIntoView({ behavior: 'smooth' });
+  });
+  modal.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
   });
   
   // Mobile menu toggle (for responsive design)
