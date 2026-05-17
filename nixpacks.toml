@@ -1,0 +1,8 @@
+[phases.install]
+cmds = ["npm ci --omit=dev", "rm -rf node_modules/.cache"]
+
+[phases.build]
+cmds = ["echo 'build complete'"]
+
+[start]
+cmd = "node server.js"
