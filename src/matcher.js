@@ -14,16 +14,17 @@ const STOP_WORDS = new Set([
   'get', 'gets', 'got', 'end', 'ends', 'least', 'ever', 'even', 'still',
   'within', 'market', 'event', 'chance', 'probability', 'likely',
   'happen', 'happens', 'occur', 'occurs', 'come', 'comes', 'make', 'made',
-  'reach', 'hit', 'least', 'most', 'least', 'above', 'below', 'over',
-  'under', 'between', 'least', 'most', 'many', 'much', 'more', 'than'
+  'reach', 'hit', 'many', 'much', 'than'
 ]);
 
 function tokenize(text) {
   return text
     .toLowerCase()
+    // Preserve hyphenated codes as one token: CO-01 → co01, WI-05 → wi05
+    .replace(/([a-z0-9])-([a-z0-9])/g, '$1$2')
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
-    .filter(w => w.length >= 3 && !STOP_WORDS.has(w) && !/^\d{1,2}$/.test(w));
+    .filter(w => w.length >= 3 && !STOP_WORDS.has(w));
 }
 
 function jaccardSimilarity(tokens1, tokens2) {
@@ -36,7 +37,6 @@ function jaccardSimilarity(tokens1, tokens2) {
   return intersection / union;
 }
 
-// Check if any token from set1 is a prefix/suffix of any token in set2 (handles plurality, etc.)
 function partialMatch(tokens1, tokens2) {
   let count = 0;
   for (const t1 of tokens1) {
@@ -51,13 +51,13 @@ function partialMatch(tokens1, tokens2) {
   return count;
 }
 
-export function findMatches(polyMarkets, kalshiMarkets, threshold = 0.18) {
+export function findMatches(polyMarkets, kalshiMarkets, threshold = 0.3) {
   const kalshiTokenCache = kalshiMarkets.map(m => ({
     market: m,
     tokens: new Set(tokenize(m.question))
   }));
 
-  const matches = [];
+  const allMatches = [];
 
   for (const poly of polyMarkets) {
     const polyTokens = new Set(tokenize(poly.question));
@@ -67,25 +67,30 @@ export function findMatches(polyMarkets, kalshiMarkets, threshold = 0.18) {
       if (kalshiTokens.size < 2) continue;
 
       let score = jaccardSimilarity(polyTokens, kalshiTokens);
-
-      // Boost score for partial word matches (handles plurals, verb forms)
       const partial = partialMatch(polyTokens, kalshiTokens);
       if (partial > 0) score += partial * 0.05;
 
       if (score >= threshold) {
-        matches.push({ poly, kalshi, score });
+        allMatches.push({ poly, kalshi, score });
       }
     }
   }
 
-  // Remove duplicate poly+kalshi pairings, keep highest score
-  const seen = new Map();
-  for (const m of matches) {
-    const key = `${m.poly.id}::${m.kalshi.id}`;
-    if (!seen.has(key) || seen.get(key).score < m.score) {
-      seen.set(key, m);
+  // Sort by score descending then enforce greedy 1-to-1 matching:
+  // each Polymarket and each Kalshi market appears in at most one pair.
+  allMatches.sort((a, b) => b.score - a.score);
+
+  const usedPoly   = new Set();
+  const usedKalshi = new Set();
+  const result     = [];
+
+  for (const match of allMatches) {
+    if (!usedPoly.has(match.poly.id) && !usedKalshi.has(match.kalshi.id)) {
+      usedPoly.add(match.poly.id);
+      usedKalshi.add(match.kalshi.id);
+      result.push(match);
     }
   }
 
-  return [...seen.values()].sort((a, b) => b.score - a.score);
+  return result;
 }
