@@ -1,6 +1,10 @@
 name: Deploy to Railway
 
 on:
+  push:
+    branches:
+      - claude/arbitrage-scanner-deployment-W46zw
+      - main
   workflow_dispatch:
 
 jobs:
@@ -8,8 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: claude/ethereum-options-alert-w4di3
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli
@@ -17,4 +19,4 @@ jobs:
       - name: Deploy
         run: railway up --detach
         env:
-          RAILWAY_TOKEN: 3f8642a5-cfe8-43e1-8cf4-1e570e672847
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}

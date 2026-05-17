@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArbScanner — Polymarket × Kalshi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="app">
+
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <span class="logo-bolt">⚡</span>
+          <span class="logo-name">ArbScanner</span>
+        </div>
+        <div class="platform-tags">
+          <span class="ptag poly">Polymarket</span>
+          <span class="ptag-x">×</span>
+          <span class="ptag kalshi">Kalshi</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="refresh-meta">
+          <span class="last-updated" id="lastUpdated">Connecting…</span>
+          <span class="countdown-wrap">Refresh in <span class="mono" id="countdown">—</span></span>
+        </div>
+        <button class="btn-refresh" id="refreshBtn" title="Refresh now">
+          <span class="spin-icon" id="spinIcon">↻</span> Refresh
+        </button>
+      </div>
+    </header>
+
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-label">Opportunities</div>
+        <div class="stat-val" id="sTotal">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Executable Arbs</div>
+        <div class="stat-val profit-high" id="sExec">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Best ROI</div>
+        <div class="stat-val profit-high" id="sBest">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg Profit</div>
+        <div class="stat-val" id="sAvg">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Poly Markets</div>
+        <div class="stat-val" id="sPoly">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Kalshi Markets</div>
+        <div class="stat-val" id="sKalshi">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Matched Pairs</div>
+        <div class="stat-val" id="sMatched">—</div>
+      </div>
+    </div>
+
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search markets…" autocomplete="off" />
+          <button class="search-clear hidden" id="searchClear">✕</button>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Min Profit</label>
+          <select id="minProfitFilter" class="filter-select">
+            <option value="0">Any</option>
+            <option value="0.5">≥ 0.5%</option>
+            <option value="1" selected>≥ 1%</option>
+            <option value="2">≥ 2%</option>
+            <option value="3">≥ 3%</option>
+            <option value="5">≥ 5%</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Type</label>
+          <select id="typeFilter" class="filter-select">
+            <option value="all">All</option>
+            <option value="executable">Executable only</option>
+            <option value="indicative">Indicative only</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Sort</label>
+          <select id="sortBy" class="filter-select">
+            <option value="profit">Best Profit</option>
+            <option value="volume">Volume</option>
+            <option value="match">Match Score</option>
+          </select>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <span class="result-count" id="resultCount">Loading…</span>
+      </div>
+    </div>
+
+    <div class="table-wrap" id="tableWrap">
+      <div class="overlay-state" id="loadingState">
+        <div class="loader"></div>
+        <p>Scanning markets…</p>
+      </div>
+
+      <div class="overlay-state hidden" id="emptyState">
+        <div class="empty-icon">📊</div>
+        <p class="empty-title">No opportunities found</p>
+        <p class="empty-sub" id="emptySubText">Try lowering the minimum profit filter.</p>
+      </div>
+
+      <table class="arb-table hidden" id="arbTable">
+        <thead>
+          <tr>
+            <th class="col-event">Event</th>
+            <th class="col-strategy">Strategy</th>
+            <th class="col-price">YES Price</th>
+            <th class="col-price">NO Price</th>
+            <th class="col-cost">Total Cost</th>
+            <th class="col-profit th-profit">Profit</th>
+            <th class="col-volume">Volume</th>
+            <th class="col-links">Links</th>
+          </tr>
+        </thead>
+        <tbody id="arbBody"></tbody>
+      </table>
+    </div>
+
+    <div id="kalshiSetupCard" class="setup-card hidden">
+      <div class="setup-inner">
+        <h3>🔑 Configure Kalshi Access</h3>
+        <p>Set one of these as Railway environment variables to enable Kalshi scanning:</p>
+        <div class="setup-options">
+          <div class="setup-option">
+            <div class="setup-option-title">Option A — API Key</div>
+            <code>KALSHI_API_KEY=your_key_here</code>
+          </div>
+          <div class="setup-option">
+            <div class="setup-option-title">Option B — Login Credentials</div>
+            <code>KALSHI_EMAIL=your@email.com</code>
+            <code>KALSHI_PASSWORD=your_password</code>
+          </div>
+        </div>
+        <p class="setup-note">Get your API key at <strong>kalshi.com</strong> → Account → API.</p>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span>Live spreads · Updates every 2 minutes</span>
+      <span class="sep">·</span>
+      <span>Prices indicative — verify before trading</span>
+      <span class="sep">·</span>
+      <span>Not financial advice</span>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
