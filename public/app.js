@@ -80,12 +80,8 @@ function updateAlertBanner(s) {
 }
 
 function showKalshiSetup(s) {
-  const card = $('kalshiSetupCard');
-  if (!s.kalshiConfigured || s.kalshiStatus === 'not_configured') {
-    card.classList.remove('hidden');
-  } else {
-    card.classList.add('hidden');
-  }
+  // Public API — no credentials needed, always hide setup card
+  $('kalshiSetupCard').classList.add('hidden');
 }
 
 function updateLastUpdated(iso) {

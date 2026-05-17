@@ -90,7 +90,7 @@ export async function fetchArbitrageOpportunities() {
     executableOpportunities: 0,
     polymarketStatus: 'ok',
     kalshiStatus: 'ok',
-    kalshiConfigured: !!(process.env.KALSHI_API_KEY || (process.env.KALSHI_EMAIL && process.env.KALSHI_PASSWORD))
+    kalshiConfigured: true // public API — no credentials needed
   };
 
   const [polyResult, kalshiResult] = await Promise.allSettled([
@@ -113,8 +113,7 @@ export async function fetchArbitrageOpportunities() {
     kalshiMarkets = kalshiResult.value;
     stats.kalshiMarkets = kalshiMarkets.length;
   } else {
-    const msg = kalshiResult.reason.message || '';
-    stats.kalshiStatus = msg.startsWith('NO_AUTH') ? 'not_configured' : msg;
+    stats.kalshiStatus = kalshiResult.reason.message || 'error';
     console.error('Kalshi error:', msg);
   }
 
