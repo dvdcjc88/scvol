@@ -73,7 +73,7 @@ export async function fetchKalshiMarkets() {
         const question = m.title || event.title || '';
         if (!question) continue;
 
-        const eventSlug = (m.event_ticker || event.event_ticker || '').toLowerCase();
+        const eventSlug = m.event_ticker || event.event_ticker || '';
         const url = `https://kalshi.com/markets/${eventSlug}`;
 
         allMarkets.push({

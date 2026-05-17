@@ -394,6 +394,17 @@ body {
 .s-platform.kalshi { background: rgba(167,139,250,0.15); color: var(--kalshi); }
 
 /* Price cell */
+.price-link {
+  display: block;
+  text-decoration: none;
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  transition: background 0.15s;
+}
+.price-link:hover { background: rgba(255,255,255,0.06); }
+.price-link:hover .price-val { color: var(--accent); }
+
 .price-val {
   font-family: var(--mono);
   font-size: 13px;

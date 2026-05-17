@@ -158,6 +158,8 @@ function buildRow(o) {
 
   const yesPlatformClass  = o.buyYesPlatform.toLowerCase();
   const noPlatformClass   = o.buyNoPlatform.toLowerCase();
+  const yesUrl = o.buyYesPlatform === 'Polymarket' ? o.polyUrl : o.kalshiUrl;
+  const noUrl  = o.buyNoPlatform  === 'Polymarket' ? o.polyUrl : o.kalshiUrl;
 
   const polyVol = formatVolume(o.polyVolume);
   const kVol    = formatVolume(o.kalshiVolume);
@@ -191,12 +193,16 @@ function buildRow(o) {
     </div>
   </td>
   <td class="col-price">
-    <div class="price-val mono">${(o.yesPricePaid * 100).toFixed(1)}¢</div>
-    <div class="price-sub">${o.buyYesPlatform}</div>
+    <a href="${yesUrl}" target="_blank" rel="noopener" class="price-link">
+      <div class="price-val mono">${(o.yesPricePaid * 100).toFixed(1)}¢</div>
+      <div class="price-sub">${o.buyYesPlatform}</div>
+    </a>
   </td>
   <td class="col-price">
-    <div class="price-val mono">${(o.noPricePaid * 100).toFixed(1)}¢</div>
-    <div class="price-sub">${o.buyNoPlatform}</div>
+    <a href="${noUrl}" target="_blank" rel="noopener" class="price-link">
+      <div class="price-val mono">${(o.noPricePaid * 100).toFixed(1)}¢</div>
+      <div class="price-sub">${o.buyNoPlatform}</div>
+    </a>
   </td>
   <td class="col-cost">
     <div class="cost-val mono">${(o.totalCost * 100).toFixed(1)}¢</div>
@@ -210,8 +216,8 @@ function buildRow(o) {
     <div class="vol-sub">Poly vol</div>
   </td>
   <td class="links-cell col-links">
-    <a href="${escHtml(o.polyUrl)}" target="_blank" rel="noopener" class="link-btn poly">PM</a>
-    <a href="${escHtml(o.kalshiUrl)}" target="_blank" rel="noopener" class="link-btn kalshi">KL</a>
+    <a href="${o.polyUrl}" target="_blank" rel="noopener" class="link-btn poly">PM</a>
+    <a href="${o.kalshiUrl}" target="_blank" rel="noopener" class="link-btn kalshi">KL</a>
   </td>
 </tr>`;
 }
